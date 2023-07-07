@@ -3,6 +3,7 @@ package ru.skypro.homework.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
@@ -17,23 +18,21 @@ import java.io.IOException;
 @RequestMapping("/users")
 public class UserController {
     @PostMapping("/set_password")
-    public NewPassword setPassword(@RequestBody String currentPassword, String newPassword) {
-        return new NewPassword(currentPassword, newPassword);
+    public ResponseEntity<NewPassword> setPassword(@RequestBody String currentPassword, String newPassword) {
+        return ResponseEntity.ok(new NewPassword(currentPassword,newPassword));
     }
 
     @GetMapping("/me")
-    public User getUser() {
-        return new User();
+    public ResponseEntity<User> getUser() {
+        return ResponseEntity.ok(new User());
     }
 
     @PatchMapping("/me")
-    public UpdateUser updateUser(@RequestBody String firstName, String lastName, String phone) throws IOException {
-        return new UpdateUser(firstName, lastName, phone);
+    public ResponseEntity<UpdateUser> updateUser(@RequestBody String firstName, String lastName, String phone) throws IOException {
+        return ResponseEntity.ok(new UpdateUser(firstName,lastName,phone));
     }
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public User updateImage(@RequestBody String image){
-        User user = new User();
-        user.setImage(image);
-        return user;
+    public ResponseEntity<User> updateImage(@RequestBody String image){
+        return ResponseEntity.ok(new User());
     }
 }

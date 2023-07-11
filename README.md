@@ -1,7 +1,6 @@
 # Inet Store  
 Интернет магазин - дипломный проект.
-
-[//]: # (![logo]&#40;https://самозанятые.рф/blog/wp-content/uploads/2020/03/kak_samozanyatomu_otkryt_internet_magazin.png&#41;)
+![logo](https://самозанятые.рф/blog/wp-content/uploads/2020/03/kak_samozanyatomu_otkryt_internet_magazin.png)
 
 Это вам не `HelloWorld`
 ```java
@@ -27,6 +26,13 @@ www.InetStore.ru<br>
 ### Гитхаб GITHUB
 Ссылка на рабочий репозиторий [гитхаба][1]
 
+### Зависимости и техническая часть
+- SpringFramework
+- projectlombok
+- postgresql
+- springdoc
+- Java ver. 11
+
 ### Hyperlinks on project
 путешествие по внутреннему проекту<br>
 ссылка на [config](./src/main/java/ru/skypro/homework/config)<br>
@@ -35,8 +41,7 @@ www.InetStore.ru<br>
 ссылка на [DTO](./src/main/java/ru/skypro/homework/dto)<br>
 ссылка на [filter](./src/main/java/ru/skypro/homework/filter)<br>
 # Этапы проекта (1 этап = 1 неделя)
-- Этап I. Настройка Spring-проекта.<br>
-    
+- Этап I. Настройка Spring-проекта.   
 - Этап II. Настройка авторизации и аутентификации.
 - Этап III. Описание моделей объявлений и отзывов.
 - Этап IV. Определение permissions к контроллерам.

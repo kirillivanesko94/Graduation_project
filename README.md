@@ -1,6 +1,7 @@
 # Inet Store  
 Интернет магазин - дипломный проект.
-![logo](https://самозанятые.рф/blog/wp-content/uploads/2020/03/kak_samozanyatomu_otkryt_internet_magazin.png)
+
+[//]: # (![logo]&#40;https://самозанятые.рф/blog/wp-content/uploads/2020/03/kak_samozanyatomu_otkryt_internet_magazin.png&#41;)
 
 Это вам не `HelloWorld`
 ```java

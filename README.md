@@ -10,7 +10,6 @@ public class Main{
     }
 }
 ```
-
  ЭТО ЦЕЛЫЙ САЙТ<br> 
 www.InetStore.ru<br>
 ~~кликабельно~~

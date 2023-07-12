@@ -1,6 +1,5 @@
 package ru.skypro.homework.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,21 +8,28 @@ import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.User;
+import ru.skypro.homework.entity.AdEntity;
+import ru.skypro.homework.service.AdService;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("ads")
 public class AdsController {
+    private final AdService adService;
+
+    public AdsController(AdService adService) {
+        this.adService = adService;
+    }
+
     @GetMapping()
     public ResponseEntity<Ads> getAds() {
         return ResponseEntity.ok(new Ads());
     }
 
     @PostMapping()
-    public ResponseEntity<Ad> addAds() {
-        return ResponseEntity.ok(new Ad());
+    public AdEntity addAds(@RequestBody Ad ad) {
+        return adService.saveAd(ad);
     }
 
     @GetMapping("{id}")

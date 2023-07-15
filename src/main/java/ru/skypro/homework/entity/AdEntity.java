@@ -1,10 +1,9 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
+import ru.skypro.homework.dto.Ad;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -16,4 +15,5 @@ public class AdEntity {
     private int pk;
     private int price;
     private String title;
+
 }

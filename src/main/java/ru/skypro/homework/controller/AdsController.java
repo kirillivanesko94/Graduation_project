@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,17 @@ public class AdsController {
 
     @GetMapping()
     public ResponseEntity<Ads> getAds() {
-        return ResponseEntity.ok(new Ads());
+        return ResponseEntity.ok(adService.getAllAds());
     }
 
     @PostMapping()
-    public AdEntity addAds(@RequestBody Ad ad) {
-        return adService.saveAd(ad);
+    public ResponseEntity<Ad> addAds(@RequestBody AdEntity adEntity) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(adService.saveAd(adEntity));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
     }
 
     @GetMapping("{id}")
@@ -46,12 +52,14 @@ public class AdsController {
     public ResponseEntity<CreateOrUpdateAd> updatetAd(@PathVariable int id, @RequestBody String title, int price, String description) {
         return ResponseEntity.ok(new CreateOrUpdateAd(title, price, description));
     }
+
     @GetMapping("/me")
-    public ResponseEntity<Ads> getAllAdsByUser(){
+    public ResponseEntity<Ads> getAllAdsByUser() {
         return ResponseEntity.ok(new Ads());
     }
+
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<User> updateImageAd(@PathVariable int id, @RequestBody String image){
+    public ResponseEntity<User> updateImageAd(@PathVariable int id, @RequestBody String image) {
         return ResponseEntity.ok(new User());
     }
 }

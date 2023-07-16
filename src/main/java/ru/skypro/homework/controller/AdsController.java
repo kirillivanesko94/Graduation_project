@@ -1,51 +1,62 @@
 package ru.skypro.homework.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.dto.Ad;
-import ru.skypro.homework.dto.Ads;
-import ru.skypro.homework.dto.CreateOrUpdateAd;
-import ru.skypro.homework.dto.User;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.exception.AdNotFoundException;
+import ru.skypro.homework.service.impl.AdService;
+
+import java.security.Principal;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("ads")
 public class AdsController {
+    private final AdService adService;
+
+    public AdsController(AdService adService) {
+        this.adService = adService;
+    }
+
     @GetMapping()
     public ResponseEntity<Ads> getAds() {
-        return ResponseEntity.ok(new Ads());
+        return ResponseEntity.ok(adService.getAllAds());
     }
 
     @PostMapping()
-    public ResponseEntity<Ad> addAds() {
-        return ResponseEntity.ok(new Ad());
+    public ResponseEntity<Ad> addAds(@RequestBody Ad ad) {
+        adService.saveAd(ad);
+        return ResponseEntity.ok(ad);
+
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Ad> getInformationAboutAd(@PathVariable int id) {
-        return ResponseEntity.ok(new Ad());
+    public ResponseEntity<ExtendedAd> getInformationAboutAd(@PathVariable int id) throws AdNotFoundException {
+        return ResponseEntity.ok(adService.getInformationAboutAd(id));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Ad> deleteAd(@PathVariable int id) {
-        return ResponseEntity.ok(new Ad());
+    public ResponseEntity<?> deleteAd(@PathVariable int id) throws AdNotFoundException {
+        adService.deleteAd(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<CreateOrUpdateAd> updatetAd(@PathVariable int id, @RequestBody String title, int price, String description) {
-        return ResponseEntity.ok(new CreateOrUpdateAd(title, price, description));
+    public ResponseEntity<Ad> updateAd(@PathVariable int id, @RequestBody CreateOrUpdateAd createOrUpdateAd)
+            throws AdNotFoundException {
+        adService.updateAD(id, createOrUpdateAd.getTitle(), createOrUpdateAd.getPrice(), createOrUpdateAd.getDescription());
+        return ResponseEntity.ok().build();
     }
+
     @GetMapping("/me")
-    public ResponseEntity<Ads> getAllAdsByUser(){
-        return ResponseEntity.ok(new Ads());
+    public ResponseEntity<Ads> getAllAdsByUser(Principal principal) throws AdNotFoundException{
+        return ResponseEntity.ok(adService.getAllAdsByUser(principal));
     }
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<User> updateImageAd(@PathVariable int id, @RequestBody String image){
-        return ResponseEntity.ok(new User());
+
+    @PatchMapping(value = "/{id}/image")
+    public ResponseEntity<String> updateImageAd(@PathVariable int id, @RequestBody Ad ad) throws AdNotFoundException {
+        return ResponseEntity.ok(adService.updateImage(id, ad.getImage()));
     }
 }

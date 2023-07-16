@@ -7,6 +7,7 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,6 +21,8 @@ public class UserEntity implements UserDetails{
     private String phone;
     private String image;
     private String password;
+    @OneToMany(mappedBy = "pk")
+    private List<AdEntity> adEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

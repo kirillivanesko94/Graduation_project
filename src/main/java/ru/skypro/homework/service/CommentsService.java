@@ -1,4 +1,4 @@
-package ru.skypro.homework.service.impl;
+package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Comment;
@@ -10,15 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CommentsServiceImpl {
+public class CommentsService {
     private final CommentEntityRepository repository;
+    private final CommentMapper commentMapper;
 
-    public CommentsServiceImpl(CommentEntityRepository repository) {
+    public CommentsService(CommentEntityRepository repository, CommentMapper commentMapper) {
         this.repository = repository;
+        this.commentMapper = commentMapper;
     }
 
     public Comment addComment(Comment comment) {
-        repository.save(CommentMapper.INSTANCE.toEntity(comment));
+        repository.save(commentMapper.toEntity(comment));
         return comment;
     }
 
@@ -30,9 +32,9 @@ public class CommentsServiceImpl {
         Optional<CommentEntity> entity = repository.findById(id);
         if (entity.isPresent()) {
             CommentEntity newCommentEntity = entity.get();
-            newCommentEntity.setText(CommentMapper.INSTANCE.toEntity(updateComment).getText());
+            newCommentEntity.setText(commentMapper.toEntity(updateComment).getText());
             repository.save(newCommentEntity);
-            return CommentMapper.INSTANCE.toDTO(newCommentEntity);
+            return commentMapper.toDTO(newCommentEntity);
         }
         throw new Exception("Отзыв не найден");
     }

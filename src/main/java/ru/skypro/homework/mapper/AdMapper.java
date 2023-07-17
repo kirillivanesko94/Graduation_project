@@ -1,31 +1,16 @@
 package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
 import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.entity.AdEntity;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdMapper {
-//    AdMapper INSTANCE = Mappers.getMapper(AdMapper.class);
-//    AdEntity toEntity(Ad ad);
-    static Ad mapToDto(AdEntity adEntity){
-        Ad ad = new Ad();
-        ad.setAuthor(adEntity.getAuthor());
-        ad.setImage(adEntity.getImage());
-        ad.setPk(adEntity.getPk());
-        ad.setPrice(adEntity.getPrice());
-        ad.setTitle(adEntity.getTitle());
-        return ad;
-    }
-    static AdEntity mapToEntity(Ad ad) {
-        AdEntity adEntity = new AdEntity();
-        adEntity.setAuthor(ad.getAuthor());
-        adEntity.setImage(ad.getImage());
-        adEntity.setPk(ad.getPk());
-        adEntity.setPrice(ad.getPrice());
-        adEntity.setTitle(ad.getTitle());
-        return adEntity;
-    }
+    @Mapping(target = "image", expression="java(adEntity.getImage().toString())")
+    Ad mapToDto(AdEntity adEntity);
+    @Mapping(target = "image", expression="java(adEntity.getImage())")
+    AdEntity mapToEntity(Ad ad);
+
 
 }

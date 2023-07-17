@@ -1,11 +1,14 @@
 package ru.skypro.homework.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdNotFoundException;
-import ru.skypro.homework.service.impl.AdService;
+import ru.skypro.homework.service.AdService;
 
 import java.security.Principal;
 
@@ -25,10 +28,11 @@ public class AdsController {
         return ResponseEntity.ok(adService.getAllAds());
     }
 
-    @PostMapping()
-    public ResponseEntity<Ad> addAds(@RequestBody Ad ad) {
-        adService.saveAd(ad);
-        return ResponseEntity.ok(ad);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Ad> addAds(@RequestPart("properties") Ad ad,
+                                     @RequestPart("image") MultipartFile image) {
+        adService.saveAd(ad, image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ad);
 
     }
 
@@ -51,12 +55,12 @@ public class AdsController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Ads> getAllAdsByUser(Principal principal) throws AdNotFoundException{
+    public ResponseEntity<Ads> getAllAdsByUser(Principal principal) throws AdNotFoundException {
         return ResponseEntity.ok(adService.getAllAdsByUser(principal));
     }
 
-    @PatchMapping(value = "/{id}/image")
-    public ResponseEntity<String> updateImageAd(@PathVariable int id, @RequestBody Ad ad) throws AdNotFoundException {
-        return ResponseEntity.ok(adService.updateImage(id, ad.getImage()));
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateImageAd(@PathVariable int id, @RequestParam("image") MultipartFile image) throws AdNotFoundException {
+        return ResponseEntity.ok(adService.updateImage(id, image));
     }
 }

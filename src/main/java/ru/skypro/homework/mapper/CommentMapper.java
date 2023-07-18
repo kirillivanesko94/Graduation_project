@@ -7,16 +7,16 @@ import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.entity.CommentEntity;
 
+import java.util.List;
 
-@Mapper
+
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
-    CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
-
-    @Mapping(source = "pk", target = "id")
+    @Mapping(source = "author", target = "user.id")
     CommentEntity toEntity(Comment comment);
 
-    @Mapping(source = "id", target = "pk")
+    @Mapping(source = "user.id", target = "author")
     Comment toDTO(CommentEntity commentEntity);
 
-    Comments commentsListToDTO(int count, CommentEntity[] results);
+    List<Comment> commentsListToDTO(List<CommentEntity> commentEntityList);
 }

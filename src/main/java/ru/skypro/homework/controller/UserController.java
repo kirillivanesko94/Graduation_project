@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
-import ru.skypro.homework.service.impl.UserServiceImpl;
+import ru.skypro.homework.service.UserService;
 
 import java.security.Principal;
 
@@ -17,9 +17,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserServiceImpl service;
+    private final UserService service;
 
-    public UserController(UserServiceImpl service) {
+    public UserController(UserService service) {
         this.service = service;
     }
     @PostMapping("/set_password")
@@ -38,9 +38,9 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UpdateUser> updateUser(Principal principal, @RequestParam String firstName,@RequestParam String lastName, @RequestParam String phone){
+    public ResponseEntity<UpdateUser> updateUser(Principal principal, @RequestBody UpdateUser updateUser){
         try{
-            return ResponseEntity.ok(service.updateUser(principal, firstName, lastName, phone));
+            return ResponseEntity.ok(service.updateUser(principal, updateUser.getFirstName(), updateUser.getLastName(), updateUser.getPhone()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -48,7 +48,7 @@ public class UserController {
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<User> updateImage(Principal principal, @RequestParam MultipartFile image){
         try{
-            return ResponseEntity.ok(service.updateImage(principal, image.toString()));
+            return ResponseEntity.ok(service.updateImage(principal, image));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

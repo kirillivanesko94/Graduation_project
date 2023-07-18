@@ -1,25 +1,28 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
-import ru.skypro.homework.dto.Ad;
-import ru.skypro.homework.dto.User;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
 public class AdEntity {
-    private int author;
-    private String image;
+    @OneToOne
+    private ImageEntity image;
     @Id
-    @GeneratedValue
-    private int pk;
-    private int price;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer pk;
+    private Integer price;
     private String title;
     @ManyToOne
     @JoinColumn (name = "id")
-    UserEntity user;
+    private UserEntity user;
     private String description;
+    @OneToMany
+    private List<CommentEntity> commentEntities;
 
 
 

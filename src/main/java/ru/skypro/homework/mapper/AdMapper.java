@@ -1,31 +1,30 @@
 package ru.skypro.homework.mapper;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.Ad;
+import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 
-@Mapper
+import java.util.List;
+
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AdMapper {
-//    AdMapper INSTANCE = Mappers.getMapper(AdMapper.class);
-//    AdEntity toEntity(Ad ad);
-    static Ad mapToDto(AdEntity adEntity){
-        Ad ad = new Ad();
-        ad.setAuthor(adEntity.getAuthor());
-        ad.setImage(adEntity.getImage());
-        ad.setPk(adEntity.getPk());
-        ad.setPrice(adEntity.getPrice());
-        ad.setTitle(adEntity.getTitle());
-        return ad;
-    }
-    static AdEntity mapToEntity(Ad ad) {
-        AdEntity adEntity = new AdEntity();
-        adEntity.setAuthor(ad.getAuthor());
-        adEntity.setImage(ad.getImage());
-        adEntity.setPk(ad.getPk());
-        adEntity.setPrice(ad.getPrice());
-        adEntity.setTitle(ad.getTitle());
-        return adEntity;
-    }
+    @Mapping(source = "user.id", target = "author")
+    @Mapping(target = "image", expression = "java(adEntity.getImage().getFileName())")
+    Ad mapToDto(AdEntity adEntity);
+    @Mapping(source = "author", target = "user.id")
+    @Mapping(ignore = true, target = "image")
+    AdEntity mapToEntity(Ad ad);
+
+    List<Ad> mapToListDto(List<AdEntity> adEntities);
+    @Mapping(source = "user.firstName", target = "authorFirstName")
+    @Mapping(source = "user.lastName", target = "authorLastName")
+    @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.phone", target = "phone")
+    @Mapping(target = "image", expression = "java(adEntity.getImage().getFileName())")
+    ExtendedAd mapToExtAdDto(AdEntity adEntity);
 
 }

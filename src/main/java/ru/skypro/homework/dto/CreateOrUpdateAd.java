@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -11,7 +13,7 @@ public class CreateOrUpdateAd {
     //заголовок объявления
     private String title;
     //цена объявления
-    private int price;
+    private Integer price;
     //описание объявления
     private String description;
 

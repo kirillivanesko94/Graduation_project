@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,27 +14,26 @@ import java.util.List;
 @Data
 public class UserEntity implements UserDetails{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(unique = true)
     private String email;
     private String firstName;
     private String lastName;
     private String phone;
-    private String image;
     private String password;
     @OneToMany(mappedBy = "pk")
     private List<AdEntity> adEntity;
+    @OneToOne
+    private ImageEntity image;
+    @OneToMany
+    private List<CommentEntity> comment;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
-    @Override
-    public String getPassword() {
-        Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
-        return argon2PasswordEncoder.encode("password");
-    }
 
     @Override
     public String getUsername() {

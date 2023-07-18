@@ -15,17 +15,15 @@ import ru.skypro.homework.service.CommentsService;
 @RequestMapping("/ads")
 public class CommentsController {
     private final CommentsService service;
-    private final CommentMapper commentMapper;
 
-    public CommentsController(CommentsService service, CommentMapper commentMapper) {
+
+    public CommentsController(CommentsService service) {
         this.service = service;
-        this.commentMapper = commentMapper;
     }
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable int id) {
-        CommentEntity[] allComments = service.getAllComments();
-        return ResponseEntity.ok(commentMapper.commentsListToDTO(allComments.length, allComments));
+        return ResponseEntity.ok(service.getAllComments());
     }
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable int id, @RequestBody Comment comment) {

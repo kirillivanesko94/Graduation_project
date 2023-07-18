@@ -34,11 +34,6 @@ public class UserEntity implements UserDetails{
         return null;
     }
 
-    @Override
-    public String getPassword() {
-        Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
-        return argon2PasswordEncoder.encode("password");
-    }
 
     @Override
     public String getUsername() {

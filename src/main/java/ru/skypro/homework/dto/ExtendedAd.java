@@ -2,10 +2,12 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ExtendedAd {
     //id объявления
-    private int pk;
+    private Integer pk;
     //имя автора объявления
     private String authorFirstName;
     //фамилия автора объявления
@@ -19,7 +21,7 @@ public class ExtendedAd {
     //телефон автора объявления
     private String phone;
     //цена объявления
-    private int price;
+    private Integer price;
     //заголовок объявления
     private String title;
 }

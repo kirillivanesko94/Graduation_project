@@ -2,6 +2,7 @@ package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Comment;
+import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.CommentEntityRepository;
@@ -39,13 +40,13 @@ public class CommentsService {
         throw new Exception("Отзыв не найден");
     }
 
-    public CommentEntity[] getAllComments() {
+    public Comments getAllComments() {
         List<CommentEntity> list = repository.findAll();
-        CommentEntity[] arr = new CommentEntity[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            arr[i] = list.get(i);
-        }
-        return arr;
+        Comments comments = new Comments();
+        List<Comment> result = commentMapper.commentsListToDTO(list);
+        comments.setCount(result.size());
+        comments.setResults(result);
+        return comments;
     }
 
 

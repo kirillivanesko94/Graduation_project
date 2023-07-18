@@ -2,18 +2,18 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class Comment {
     //id автора комментария
-    private int author;
+    private Integer author;
     //ссылка на аватар автора комментария
-    private String authorImage;
-    //имя создателя комментария
-    private String authorFirstName;
+
     //дата и время создания комментария в миллисекундах с 00:00:00 01.01.1970
-    private Long createdAt;
+    private LocalDateTime createdAt;
     //id комментария
-    private int pk;
+    private Integer pk;
     //текст комментария
     private String text;
 }

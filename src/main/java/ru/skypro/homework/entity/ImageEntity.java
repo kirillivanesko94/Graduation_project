@@ -13,4 +13,5 @@ public class ImageEntity {
     private String mediaType;
     @Lob
     private byte[] data;
+    private String fileName;
 }

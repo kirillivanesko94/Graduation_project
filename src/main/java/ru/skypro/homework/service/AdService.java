@@ -35,15 +35,10 @@ public class AdService {
 
     public Ads getAllAds() {
         List<AdEntity> list = adRepository.findAll();
-        Ad[] result = new Ad[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            AdEntity adEntity = list.get(i);
-            Ad ad = adMapper.mapToDto(adEntity);
-            result[i] = ad;
-        }
+        List<Ad> adDtoList = adMapper.mapToListDto(list);
         Ads ads = new Ads();
-        ads.setCount(result.length);
-        ads.setResults(result);
+        ads.setCount(adDtoList.size());
+        ads.setResults(adDtoList);
         return ads;
     }
 
@@ -51,22 +46,7 @@ public class AdService {
         Optional<AdEntity> optionalAdlEntity = adRepository.findById(idAd);
         if (optionalAdlEntity.isPresent()) {
             AdEntity adEntity = optionalAdlEntity.get();
-            Ad ad = adMapper.mapToDto(adEntity);
-
-            UserEntity userEntity = optionalAdlEntity.get().getUser();
-
-            ExtendedAd extendedAd = new ExtendedAd();
-            extendedAd.setPk(ad.getPk());
-            extendedAd.setAuthorFirstName(userEntity.getFirstName());
-            extendedAd.setAuthorLastName(userEntity.getLastName());
-            extendedAd.setEmail(userEntity.getEmail());
-            extendedAd.setImage(ad.getImage());
-            extendedAd.setPhone(userEntity.getPhone());
-            extendedAd.setPrice(ad.getPrice());
-            extendedAd.setTitle(ad.getTitle());
-            extendedAd.setDescription(adEntity.getDescription());
-
-            return extendedAd;
+           return adMapper.mapToExtAdDto(adEntity);
         }
         throw new AdNotFoundException();
     }
@@ -81,12 +61,10 @@ public class AdService {
         }
     }
 
-    public Ad updateAD(int adId, String title, int price, String description) throws AdNotFoundException {
+    public Ad updateAD(int adId, CreateOrUpdateAd createOrUpdateAd) throws AdNotFoundException {
         Optional<AdEntity> optionalAdlEntity = adRepository.findById(adId);
         if (optionalAdlEntity.isPresent()) {
             AdEntity adEntity = optionalAdlEntity.get();
-
-            CreateOrUpdateAd createOrUpdateAd = new CreateOrUpdateAd(title, price, description);
             adEntity.setTitle(createOrUpdateAd.getTitle());
             adEntity.setPrice(createOrUpdateAd.getPrice());
             adEntity.setDescription(createOrUpdateAd.getDescription());
@@ -105,15 +83,10 @@ public class AdService {
             System.out.println(userEntity.getEmail());
             List<AdEntity> adEntity = adRepository.findAllByUserId(userEntity.getId());
             System.out.println(adEntity.size());
-            Ad[] result = new Ad[adEntity.size()];
-            for (int i = 0; i < adEntity.size(); i++) {
-                AdEntity adEntity1 = adEntity.get(i);
-                Ad ad = adMapper.mapToDto(adEntity1);
-                result[i] = ad;
-            }
+            List<Ad> adsListDto = adMapper.mapToListDto(adEntity);
             Ads ads = new Ads();
-            ads.setCount(result.length);
-            ads.setResults(result);
+            ads.setCount(adsListDto.size());
+            ads.setResults(adsListDto);
             return ads;
         } else {
             throw new AdNotFoundException();

@@ -50,7 +50,7 @@ public class AdsController {
     @PatchMapping("{id}")
     public ResponseEntity<Ad> updateAd(@PathVariable int id, @RequestBody CreateOrUpdateAd createOrUpdateAd)
             throws AdNotFoundException {
-        adService.updateAD(id, createOrUpdateAd.getTitle(), createOrUpdateAd.getPrice(), createOrUpdateAd.getDescription());
+        adService.updateAD(id, createOrUpdateAd);
         return ResponseEntity.ok().build();
     }
 

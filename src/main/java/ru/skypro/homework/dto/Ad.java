@@ -2,16 +2,18 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class Ad {
     //id автора объявления
-    private int author;
+    private Integer author;
     //ссылка на картинку объявления
     private String image;
     //id объявления
-    private int pk;
+    private Integer pk;
     //цена объявления
-    private int price;
+    private Integer price;
     //заголовок объявления
     private String title;
 }

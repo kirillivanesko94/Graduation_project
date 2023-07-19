@@ -4,12 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdEntity;
+import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdEntityRepository;
 import ru.skypro.homework.repository.UserEntityRepository;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -19,16 +21,20 @@ public class AdService {
     private final AdEntityRepository adRepository;
     private final UserEntityRepository userEntityRepository;
     private final AdMapper adMapper;
+    private final ImageService imageService;
 
 
-    public AdService(AdEntityRepository adRepository, UserEntityRepository userEntityRepository, AdMapper adMapper) {
+    public AdService(AdEntityRepository adRepository, UserEntityRepository userEntityRepository, AdMapper adMapper, ImageService imageService) {
         this.adRepository = adRepository;
         this.userEntityRepository = userEntityRepository;
         this.adMapper = adMapper;
+        this.imageService = imageService;
     }
 
-    public Ad saveAd(Ad ad, MultipartFile image) {
+    public Ad saveAd(Ad ad, MultipartFile image) throws IOException {
         AdEntity adEntity = adMapper.mapToEntity(ad);
+        ImageEntity uploadImage = imageService.saveImage(image);
+        adEntity.setImage(uploadImage);
         adRepository.save(adEntity);
         return adMapper.mapToDto(adEntity);
     }

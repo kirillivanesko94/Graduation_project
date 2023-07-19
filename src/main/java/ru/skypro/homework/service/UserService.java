@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
+import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserEntityRepository;
@@ -18,10 +19,12 @@ public class UserService {
     private final UserEntityRepository repository;
     private final UserDetailsManager manager;
     private final UserMapper userMapper;
-    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper) {
+    private final ImageService imageService;
+    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService) {
         this.repository = repository;
         this.manager = manager;
         this.userMapper = userMapper;
+        this.imageService = imageService;
     }
 
     public NewPassword setPassword(String currentPassword, String newPassword){
@@ -49,8 +52,9 @@ public class UserService {
     public User updateImage(Principal principal, MultipartFile image) throws Exception {
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
         if (userEntity.isPresent()){
+            ImageEntity uploadImage = imageService.saveImage(image);
             UserEntity newUserEntity = userEntity.get();
-            //newUserEntity.setImage(image);
+            newUserEntity.setImage(uploadImage);
             repository.save(newUserEntity);
             return userMapper.toDTO(newUserEntity);
         }

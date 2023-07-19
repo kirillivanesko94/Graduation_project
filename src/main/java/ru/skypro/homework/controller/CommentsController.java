@@ -5,8 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
-import ru.skypro.homework.entity.CommentEntity;
-import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.service.CommentsService;
 
 @Slf4j

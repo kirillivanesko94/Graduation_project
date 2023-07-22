@@ -3,10 +3,8 @@ package ru.skypro.homework.entity;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 

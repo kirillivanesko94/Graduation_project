@@ -6,10 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.*;
+import ru.skypro.homework.dto.Ad;
+import ru.skypro.homework.dto.Ads;
+import ru.skypro.homework.dto.CreateOrUpdateAd;
+import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.service.AdService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Slf4j
@@ -30,7 +34,7 @@ public class AdsController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> addAds(@RequestPart("properties") Ad ad,
-                                     @RequestPart("image") MultipartFile image) {
+                                     @RequestPart("image") MultipartFile image) throws IOException {
         adService.saveAd(ad, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(ad);
 

@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String mediaType;
     @Lob
     private byte[] data;

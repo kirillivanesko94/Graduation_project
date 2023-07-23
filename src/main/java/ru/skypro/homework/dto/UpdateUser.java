@@ -19,25 +19,25 @@ public class UpdateUser {
     //телефон пользователя
     private String phone;
 
-    public UpdateUser(String firstName, String lastName, String phone) throws IOException {
+    public UpdateUser(String firstName, String lastName, String phone) {
         Pattern PATTERN = Pattern.compile("\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}");
         Matcher matcher = PATTERN.matcher(phone);
         if (matcher.matches()){
             this.phone = phone;
         }else{
-            throw new IOException("Телефон должен быть написан в формате: +7 (777) 777-77-77");
+            throw new RuntimeException("Телефон должен быть написан в формате: +7 (777) 777-77-77");
         }
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public void setFirstName(String firstName) throws IOException {
+    public void setFirstName(String firstName) {
         Pattern PATTERN = Pattern.compile("\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}");
         Matcher matcher = PATTERN.matcher(phone);
         if (matcher.matches()){
             this.phone = phone;
         }else{
-            throw new IOException("Телефон должен быть написан в формате: +7 (777) 777-77-77");
+            throw new RuntimeException("Телефон должен быть написан в формате: +7 (777) 777-77-77");
         }
     }
 

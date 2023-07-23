@@ -2,9 +2,7 @@ package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ru.skypro.homework.dto.Comment;
-import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.entity.CommentEntity;
 
 import java.util.List;

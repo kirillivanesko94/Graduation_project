@@ -2,7 +2,10 @@ package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.*;
+import ru.skypro.homework.dto.Ad;
+import ru.skypro.homework.dto.Ads;
+import ru.skypro.homework.dto.CreateOrUpdateAd;
+import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
@@ -31,10 +34,14 @@ public class AdService {
         this.imageService = imageService;
     }
 
-    public Ad saveAd(Ad ad, MultipartFile image) throws IOException {
-        AdEntity adEntity = adMapper.mapToEntity(ad);
+    public Ad saveAd(CreateOrUpdateAd createOrUpdateAd, MultipartFile image, Principal principal) throws IOException {
+        String email = principal.getName();
+        Optional<UserEntity> optionalUserEntity = userEntityRepository.findByEmail(email);
+        UserEntity userEntity = optionalUserEntity.get();
+        AdEntity adEntity = adMapper.mapCreateOrUpdateDtoTo(createOrUpdateAd);
         ImageEntity uploadImage = imageService.saveImage(image);
         adEntity.setImage(uploadImage);
+        adEntity.setUser(userEntity);
         adRepository.save(adEntity);
         return adMapper.mapToDto(adEntity);
     }

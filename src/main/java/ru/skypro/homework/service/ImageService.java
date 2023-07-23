@@ -13,9 +13,12 @@ public class ImageService {
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
-    public ImageEntity saveImage(MultipartFile file) throws IOException {
+    public ImageEntity saveImage(MultipartFile file){
         ImageEntity  imageEntity = new ImageEntity();
         imageEntity.setData(null);
+        imageEntity.setId(null);
+        imageEntity.setFileName(null);
+        imageEntity.setMediaType(null);
         imageRepository.save(imageEntity);
         return imageEntity;
     }

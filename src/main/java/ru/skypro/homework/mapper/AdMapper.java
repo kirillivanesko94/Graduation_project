@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.Ad;
+import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 
@@ -15,6 +16,7 @@ public interface AdMapper {
     @Mapping(source = "user.id", target = "author")
     @Mapping(target = "image", expression = "java(adEntity.getImage().getFileName())")
     Ad mapToDto(AdEntity adEntity);
+    AdEntity mapCreateOrUpdateDtoTo (CreateOrUpdateAd createOrUpdateAd);
     @Mapping(source = "author", target = "user.id")
     @Mapping(ignore = true, target = "image")
     AdEntity mapToEntity(Ad ad);

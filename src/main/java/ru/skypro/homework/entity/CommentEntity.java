@@ -14,7 +14,7 @@ public class CommentEntity {
     @ManyToOne()
     @JoinColumn (name = "id")
     private UserEntity user;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private String text;
     @ManyToOne
     @JoinColumn (name = "adEntity.pk")

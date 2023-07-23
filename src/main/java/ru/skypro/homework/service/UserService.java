@@ -1,5 +1,6 @@
 package ru.skypro.homework.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,23 +21,29 @@ public class UserService {
     private final UserDetailsManager manager;
     private final UserMapper userMapper;
     private final ImageService imageService;
-    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.manager = manager;
         this.userMapper = userMapper;
         this.imageService = imageService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public NewPassword setPassword(String currentPassword, String newPassword){
-        manager.changePassword(currentPassword, newPassword);
-        return new NewPassword(currentPassword, newPassword);
+    public NewPassword setPassword(Principal principal, String newPassword){
+        UserEntity userEntity = repository.findByEmail(principal.getName()).get();
+        NewPassword newPasswordDTO = new NewPassword(userEntity.getPassword(), newPassword);
+        manager.changePassword(userEntity.getPassword(), passwordEncoder.encode(newPassword));
+        userEntity.setPassword(newPassword);
+        repository.save(userEntity);
+        return newPasswordDTO;
     }
 
-    public User getUser(Principal principal) throws Exception {
-        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElseThrow(() -> new Exception("Пользователь не найден")));
+    public User getUser(Principal principal) {
+        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElse(new UserEntity()));
         //return UserMapper.toDTO(new UserEntity());
     }
-    public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone) throws Exception {
+    public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
         if (userEntity.isPresent()){
             UserEntity newUserEntity = userEntity.get();
@@ -46,10 +53,10 @@ public class UserService {
             repository.save(newUserEntity);
             return new UpdateUser(firstName, lastName, phone);
         }
-        throw new Exception("Пользователь не найден");
+        return new UpdateUser(firstName,lastName,phone);
     }
 
-    public User updateImage(Principal principal, MultipartFile image) throws Exception {
+    public User updateImage(Principal principal, MultipartFile image) {
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
         if (userEntity.isPresent()){
             ImageEntity uploadImage = imageService.saveImage(image);
@@ -58,6 +65,6 @@ public class UserService {
             repository.save(newUserEntity);
             return userMapper.toDTO(newUserEntity);
         }
-        throw new Exception("Пользователь не найден");
+        return null;
     }
 }

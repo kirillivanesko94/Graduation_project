@@ -12,6 +12,7 @@ import ru.skypro.homework.repository.CommentEntityRepository;
 import ru.skypro.homework.repository.UserEntityRepository;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class CommentsService {
         CommentEntity commentEntity = commentMapper.toEntity(comment);
         commentEntity.setAdEntity(ad);
         commentEntity.setUser(userEntity);
+        commentEntity.setCreatedAt(LocalDateTime.now());
         repository.save(commentEntity);
         return comment;
     }

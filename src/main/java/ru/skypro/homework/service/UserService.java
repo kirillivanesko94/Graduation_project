@@ -1,7 +1,6 @@
 package ru.skypro.homework.service;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,17 +21,22 @@ public class UserService {
     private final UserDetailsManager manager;
     private final UserMapper userMapper;
     private final ImageService imageService;
-    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.manager = manager;
         this.userMapper = userMapper;
         this.imageService = imageService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseEntity<?> setPassword(Principal principal, String newPassword){
-       // manager.changePassword("password", newPassword);//add db
-        String currentPassword = "password";
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    public NewPassword setPassword(Principal principal, String newPassword){
+        UserEntity userEntity = repository.findByEmail(principal.getName()).get();
+        NewPassword newPasswordDTO = new NewPassword(userEntity.getPassword(), newPassword);
+        manager.changePassword(userEntity.getPassword(), passwordEncoder.encode(newPassword));
+        userEntity.setPassword(newPassword);
+        repository.save(userEntity);
+        return newPasswordDTO;
     }
 
     public User getUser(Principal principal) {

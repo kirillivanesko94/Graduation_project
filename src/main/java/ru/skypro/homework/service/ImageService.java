@@ -16,6 +16,9 @@ public class ImageService {
     public ImageEntity saveImage(MultipartFile file) throws IOException {
         ImageEntity  imageEntity = new ImageEntity();
         imageEntity.setData(null);
+        imageEntity.setId(null);
+        imageEntity.setFileName(null);
+        imageEntity.setMediaType(null);
         imageRepository.save(imageEntity);
         return imageEntity;
     }

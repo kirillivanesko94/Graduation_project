@@ -33,9 +33,9 @@ public class AdsController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Ad> addAds(@RequestPart("properties") Ad ad,
+    public ResponseEntity<Ad> addAds(@RequestPart("properties") CreateOrUpdateAd createOrUpdateAd,
                                      @RequestPart("image") MultipartFile image) throws IOException {
-        adService.saveAd(ad, image);
+        Ad ad = adService.saveAd(createOrUpdateAd, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(ad);
 
     }

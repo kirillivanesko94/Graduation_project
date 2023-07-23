@@ -31,8 +31,8 @@ public class AdService {
         this.imageService = imageService;
     }
 
-    public Ad saveAd(Ad ad, MultipartFile image) throws IOException {
-        AdEntity adEntity = adMapper.mapToEntity(ad);
+    public Ad saveAd(CreateOrUpdateAd createOrUpdateAd, MultipartFile image) throws IOException {
+        AdEntity adEntity = adMapper.mapCreateOrUpdateDtoTo(createOrUpdateAd);
         ImageEntity uploadImage = imageService.saveImage(image);
         adEntity.setImage(uploadImage);
         adRepository.save(adEntity);

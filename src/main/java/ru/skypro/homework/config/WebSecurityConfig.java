@@ -24,7 +24,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class WebSecurityConfig {
 //    public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
-
+//    я бы тут назвал белый лист - для всех и лист для Гостей, которые будут записаны в матчеры
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -62,7 +62,7 @@ public class WebSecurityConfig {
 //    }
 
     @Bean
-    public JdbcUserDetailsManager users(DataSource dataSource) {
+    public JdbcUserDetailsManager users_entity(DataSource dataSource) {
 //        UserDetails user =
 //                User.builder()
 //                        .username("user@gmail.com")
@@ -124,17 +124,17 @@ public class WebSecurityConfig {
 //    создавать комментарии,
 //    редактировать/удалять свои комментарии.
 
-    @Override
-    protected void configure (HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .antMatchers("/ads/**").authenticated()
-                .antMatchers("/читать все/**").hasRole("ADMIN")
-                .antMatchers("/только смотреть все АД/**").hasAnyRole("GUEST")
-                .and()
-                .formLogin()
-                .and()
-                .logout().logoutSuccessUrl("/");
-
-
-}
+//    @Override
+//    protected void configure (HttpSecurity http) throws Exception {
+//        http.authorizeHttpRequests()
+//                .antMatchers("/ads/**").authenticated()
+//                .antMatchers("/читать все/**").hasRole("ADMIN")
+//                .antMatchers("/только смотреть все АД/**").hasAnyRole("GUEST")
+//                .and()
+//                .formLogin()
+//                .and()
+//                .logout().logoutSuccessUrl("/");
+//
+//
+//}
 }

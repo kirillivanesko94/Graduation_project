@@ -1,5 +1,6 @@
 package ru.skypro.homework.config;
 
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -123,16 +124,17 @@ public class WebSecurityConfig {
 //    создавать комментарии,
 //    редактировать/удалять свои комментарии.
 
-//    @Override
-//    protected void configure (HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests()
-//                .antMatchers("/ads/**").authenticated()
-//                .antMatchers("/").hasAnyRole("GUEST")
-//                .and()
-//                .formLogin()
-//                .and()
-//                .logout().logoutSuccessUrl("/");
-//
-//
-//}
+    @Override
+    protected void configure (HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests()
+                .antMatchers("/ads/**").authenticated()
+                .antMatchers("/читать все/**").hasRole("ADMIN")
+                .antMatchers("/только смотреть все АД/**").hasAnyRole("GUEST")
+                .and()
+                .formLogin()
+                .and()
+                .logout().logoutSuccessUrl("/");
+
+
+}
 }

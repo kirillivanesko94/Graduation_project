@@ -1,4 +1,5 @@
 -- — liquibase formatted sql
+
 -- changeset chernenkov:1
 
 create sequence hibernate_sequence;

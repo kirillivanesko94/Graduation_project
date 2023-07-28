@@ -61,8 +61,8 @@ public class WebSecurityConfig {
 //        return new InMemoryUserDetailsManager(user, admin, guest);
 //    }
 
-    @Bean
-    public JdbcUserDetailsManager users_entity(DataSource dataSource) {
+//    @Bean
+//    public JdbcUserDetailsManager users_entity(DataSource dataSource) {
 //        UserDetails user =
 //                User.builder()
 //                        .username("user@gmail.com")
@@ -81,13 +81,13 @@ public class WebSecurityConfig {
 //                        .password("password")
 //                        .roles("GUEST")
 //                        .build();
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//        users.createUser(user);
-//        users.createUser(admin);
-//        users.createUser(guest);
-
-        return jdbcUserDetailsManager;
-    }
+//        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+////        users.createUser(user);
+////        users.createUser(admin);
+////        users.createUser(guest);
+//
+//        return jdbcUserDetailsManager;
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

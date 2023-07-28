@@ -1,4 +1,4 @@
-package ru.skypro.homework.entity;
+//package ru.skypro.homework.entity;
 
 import lombok.Data;
 

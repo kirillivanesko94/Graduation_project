@@ -62,7 +62,7 @@ public class WebSecurityConfig {
 //    }
 
     @Bean
-    public JdbcUserDetailsManager users_entity(DataSource dataSource) {
+    public JdbcUserDetailsManager users(DataSource dataSource) {
 //        UserDetails user =
 //                User.builder()
 //                        .username("user@gmail.com")

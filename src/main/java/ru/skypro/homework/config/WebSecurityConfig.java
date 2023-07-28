@@ -3,6 +3,7 @@ package ru.skypro.homework.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,10 @@ import ru.skypro.homework.dto.Role;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
@@ -33,7 +38,7 @@ public class WebSecurityConfig {
                         .username("user@gmail.com")
                         .password("password")
                         .passwordEncoder(passwordEncoder::encode)
-                        .roles(Role.USER.name())
+                        .roles(Role.ADMIN.name())
                         .build();
 //        UserDetails admin =
 //                User.builder()

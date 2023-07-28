@@ -1,5 +1,6 @@
 package ru.skypro.homework.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ad;
@@ -63,7 +64,7 @@ public class AdService {
         }
         throw new AdNotFoundException();
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAd(int idAd) throws AdNotFoundException {
         Optional<AdEntity> optionalAdEntity = adRepository.findById(idAd);
         if (optionalAdEntity.isPresent()) {

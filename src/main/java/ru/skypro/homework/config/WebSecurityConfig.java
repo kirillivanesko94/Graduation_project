@@ -12,6 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.service.UserContextService;
+import ru.skypro.homework.service.UserService;
+
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -21,6 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
         securedEnabled = true,
         jsr250Enabled = true)
 public class WebSecurityConfig {
+      private final UserContextService service;
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -31,23 +36,21 @@ public class WebSecurityConfig {
             "/register"
     };
 
+    public WebSecurityConfig(UserContextService service) {
+        this.service = service;
+    }
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails user =
-                User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
-                        .passwordEncoder(passwordEncoder::encode)
-                        .roles(Role.ADMIN.name())
-                        .build();
-//        UserDetails admin =
+//        UserDetails user =
 //                User.builder()
 //                        .username("user@gmail.com")
 //                        .password("password")
 //                        .passwordEncoder(passwordEncoder::encode)
 //                        .roles(Role.ADMIN.name())
 //                        .build();
-        return new InMemoryUserDetailsManager(user);
+        List<UserDetails> userDetailsList = service.doAllUsersToContext();
+//        userDetailsList.add(user);
+        return new InMemoryUserDetailsManager(userDetailsList);
     }
 
     @Bean

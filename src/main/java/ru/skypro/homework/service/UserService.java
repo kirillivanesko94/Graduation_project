@@ -26,8 +26,10 @@ public class UserService {
     public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.manager = manager;
+        //this.manager = manager;
         this.userMapper = userMapper;
         this.imageService = imageService;
+       // this.passwordEncoder = passwordEncoder;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,7 +44,6 @@ public class UserService {
 
     public User getUser(Principal principal) {
         return userMapper.toDTO(repository.findByEmail(principal.getName()).orElse(new UserEntity()));
-        //return UserMapper.toDTO(new UserEntity());
     }
     public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());

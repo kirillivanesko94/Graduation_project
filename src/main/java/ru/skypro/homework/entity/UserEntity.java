@@ -27,6 +27,7 @@ public class UserEntity implements UserDetails{
     private ImageEntity image;
     @OneToMany
     private List<CommentEntity> comment;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override

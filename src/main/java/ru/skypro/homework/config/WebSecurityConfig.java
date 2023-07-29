@@ -5,15 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.UserContextService;
-import ru.skypro.homework.service.UserService;
 
 import java.util.List;
 
@@ -21,9 +18,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
+        prePostEnabled = true)
 public class WebSecurityConfig {
       private final UserContextService service;
 
@@ -33,7 +28,8 @@ public class WebSecurityConfig {
             "/v3/api-docs",
             "/webjars/**",
             "/login",
-            "/register"
+            "/register",
+            "/images/**"
     };
 
     public WebSecurityConfig(UserContextService service) {
@@ -41,15 +37,7 @@ public class WebSecurityConfig {
     }
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-//        UserDetails user =
-//                User.builder()
-//                        .username("user@gmail.com")
-//                        .password("password")
-//                        .passwordEncoder(passwordEncoder::encode)
-//                        .roles(Role.ADMIN.name())
-//                        .build();
         List<UserDetails> userDetailsList = service.doAllUsersToContext();
-//        userDetailsList.add(user);
         return new InMemoryUserDetailsManager(userDetailsList);
     }
 

@@ -16,5 +16,6 @@ public class User {
     private String phone;
     //ссылка на аватар пользователя
     private String image;
+    private String role;
 
 }

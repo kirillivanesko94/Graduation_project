@@ -1,5 +1,6 @@
 package ru.skypro.homework.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ad;
@@ -63,7 +64,7 @@ public class AdService {
         }
         throw new AdNotFoundException();
     }
-
+    @PreAuthorize(value = "hasRole('ADMIN') or @adService.checkAccessForAd(principal.username, #id)")
     public void deleteAd(int idAd) throws AdNotFoundException {
         Optional<AdEntity> optionalAdEntity = adRepository.findById(idAd);
         if (optionalAdEntity.isPresent()) {
@@ -73,7 +74,7 @@ public class AdService {
             throw new AdNotFoundException();
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN') or @adService.checkAccessForAd(principal.username, #id)")
     public Ad updateAD(int adId, CreateOrUpdateAd createOrUpdateAd) throws AdNotFoundException {
         Optional<AdEntity> optionalAdlEntity = adRepository.findById(adId);
         if (optionalAdlEntity.isPresent()) {
@@ -116,6 +117,11 @@ public class AdService {
 //            throw new AdNotFoundException();
 //        }
         return file.toString();
+    }
+
+    public boolean checkAccessForAd(String username, Integer id) {
+        Optional<AdEntity> optional = adRepository.findById(id);
+        return optional.map(adEntity -> adEntity.getUser().getUsername().equals(username)).orElse(false);
     }
 
 }

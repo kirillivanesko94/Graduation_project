@@ -6,17 +6,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.service.UserService;
 
 @Service
 public class AuthService implements ru.skypro.homework.service.AuthService {
 
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
+    private final UserService userService;
 
     public AuthService(UserDetailsManager manager,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder, UserService userService) {
         this.manager = manager;
         this.encoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @Override
@@ -40,6 +43,7 @@ public class AuthService implements ru.skypro.homework.service.AuthService {
                         .username(register.getUsername())
                         .roles(register.getRole().name())
                         .build());
+        userService.addInTable(register);
         return true;
     }
 

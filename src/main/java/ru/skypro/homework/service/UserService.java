@@ -5,6 +5,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.ImageEntity;
@@ -25,8 +26,10 @@ public class UserService {
     public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.manager = manager;
+        //this.manager = manager;
         this.userMapper = userMapper;
         this.imageService = imageService;
+       // this.passwordEncoder = passwordEncoder;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -34,14 +37,13 @@ public class UserService {
         UserEntity userEntity = repository.findByEmail(principal.getName()).get();
         NewPassword newPasswordDTO = new NewPassword(userEntity.getPassword(), newPassword);
         manager.changePassword(userEntity.getPassword(), passwordEncoder.encode(newPassword));
-        userEntity.setPassword(newPassword);
+        userEntity.setPassword(passwordEncoder.encode(newPassword));
         repository.save(userEntity);
         return newPasswordDTO;
     }
 
     public User getUser(Principal principal) {
         return userMapper.toDTO(repository.findByEmail(principal.getName()).orElse(new UserEntity()));
-        //return UserMapper.toDTO(new UserEntity());
     }
     public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
@@ -66,5 +68,15 @@ public class UserService {
             return userMapper.toDTO(newUserEntity);
         }
         return null;
+    }
+    public void addInTable(Register register){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setPassword(passwordEncoder.encode(register.getPassword()));
+        userEntity.setEmail(register.getUsername());
+        userEntity.setPhone(register.getPhone());
+        userEntity.setFirstName(register.getFirstName());
+        userEntity.setLastName(register.getLastName());
+        userEntity.setRole(register.getRole());
+        repository.save(userEntity);
     }
 }

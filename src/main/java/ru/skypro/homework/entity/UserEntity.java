@@ -3,6 +3,7 @@ package ru.skypro.homework.entity;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -26,6 +27,8 @@ public class UserEntity implements UserDetails{
     private ImageEntity image;
     @OneToMany
     private List<CommentEntity> comment;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

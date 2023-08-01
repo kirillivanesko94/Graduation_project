@@ -15,15 +15,15 @@ public class NewPassword {
     private String newPassword;
 
     public NewPassword(String currentPassword, String newPassword) {
-        if (currentPassword.length() >= 8 && currentPassword.length() <= 16){
+        if (currentPassword.length() >= 8 ){
             this.currentPassword = currentPassword;
         }else{
-            throw new IndexOutOfBoundsException("Прежний пароль состалняет либо меньше 8 цифр , либо больше 16 цифр");
+            throw new IndexOutOfBoundsException("Прежний пароль составляет меньше 8 цифр");
         }
         if (newPassword.length() >= 8 && newPassword.length() <= 16){
             this.newPassword = newPassword;
         }else{
-            throw new IndexOutOfBoundsException("Новый пароль состалняет либо меньше 8 цифр , либо больше 16 цифр");
+            throw new IndexOutOfBoundsException("Новый пароль составляет либо меньше 8 цифр , либо больше 16 цифр");
         }
     }
 

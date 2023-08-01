@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UserService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Slf4j
@@ -45,7 +47,7 @@ public class UserController {
 
     }
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateImage(Principal principal, @RequestParam MultipartFile image){
+    public ResponseEntity<?> updateImage(Principal principal, @RequestParam MultipartFile image) throws IOException {
         service.updateImage(principal, image);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

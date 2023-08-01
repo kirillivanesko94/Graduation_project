@@ -29,7 +29,8 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/images/**"
+            "/images/**",
+            "users/me/**"
     };
 
     public WebSecurityConfig(UserContextService service) {

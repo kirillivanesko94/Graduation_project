@@ -3,11 +3,8 @@ package ru.skypro.homework.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.NullValueCheckStrategy;
 import ru.skypro.homework.dto.User;
-import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.AvatarEntity;
-import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
 
 @Mapper(componentModel = "spring")

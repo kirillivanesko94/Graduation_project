@@ -1,6 +1,7 @@
 package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.entity.AdEntity;
@@ -60,7 +61,7 @@ public class CommentsService {
         }
         throw new Exception("Отзыв не найден");
     }
-
+    @Transactional
     public Comments getAllComments(int id) {
         List<CommentEntity> list = repository.findAllByAdEntity_Pk(id);
         Comments comments = new Comments();

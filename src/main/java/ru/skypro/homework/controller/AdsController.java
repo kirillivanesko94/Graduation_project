@@ -10,7 +10,6 @@ import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ExtendedAd;
-import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.service.AdService;
 

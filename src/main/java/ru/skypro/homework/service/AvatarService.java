@@ -3,7 +3,6 @@ package ru.skypro.homework.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.AvatarEntity;
-import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserEntityRepository;

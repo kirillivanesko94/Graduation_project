@@ -4,12 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.ImageEntity;
-import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserEntityRepository;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Optional;
 
 @Service

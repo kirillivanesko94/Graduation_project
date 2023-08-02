@@ -14,6 +14,7 @@ import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserEntityRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class UserService {
     }
 
     public User getUser(Principal principal) {
-        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElse(new UserEntity()));
+        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElseThrow(EntityNotFoundException::new));
     }
     public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());

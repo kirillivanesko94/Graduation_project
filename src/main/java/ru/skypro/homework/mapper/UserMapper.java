@@ -3,6 +3,7 @@ package ru.skypro.homework.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.AvatarEntity;
@@ -14,12 +15,13 @@ public interface UserMapper {
     @Mapping(target = "image", source = "avatarEntity.user", qualifiedByName = "avatarToString")
     User toDTO(UserEntity userEntity);
 
+
     @Named("avatarToString")
     default String avatarToString(UserEntity userEntity) {
-        AvatarEntity avatarEntity = userEntity.getAvatarEntity();
-        if (avatarEntity == null) {
-            return null;
+        if (userEntity == null){
+            return "";
         }
+        AvatarEntity avatarEntity = userEntity.getAvatarEntity();
         return "/avatar/" + avatarEntity.getId().toString();
     }
 }

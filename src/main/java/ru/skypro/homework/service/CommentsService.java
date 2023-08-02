@@ -46,7 +46,7 @@ public class CommentsService {
         return comment;
     }
 
-    public void removeComment( Integer idComment) {
+    public void removeComment(Integer idComment) {
         repository.deleteById(idComment);
     }
 
@@ -61,8 +61,8 @@ public class CommentsService {
         throw new Exception("Отзыв не найден");
     }
 
-    public Comments getAllComments() {
-        List<CommentEntity> list = repository.findAll();
+    public Comments getAllComments(int id) {
+        List<CommentEntity> list = repository.findAllByAdEntity_Pk(id);
         Comments comments = new Comments();
         List<Comment> result = commentMapper.commentsListToDTO(list);
         comments.setCount(result.size());

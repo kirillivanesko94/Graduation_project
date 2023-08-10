@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class AdEntity {
     @OneToOne
+    @JoinColumn(name = "ad")
     private ImageEntity image;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

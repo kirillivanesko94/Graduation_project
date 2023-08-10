@@ -3,19 +3,18 @@ package ru.skypro.homework.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Data
-@Table(name = "image_entity")
-public class ImageEntity {
+public class AvatarEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String mediaType;
-    @Lob
+    @OneToOne(mappedBy = "avatarEntity")
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
     private byte[] data;
     private String fileName;
-    @OneToOne
-    @JoinColumn(name = "pk")
-    private AdEntity ad;
+    private String mediaType;
 }

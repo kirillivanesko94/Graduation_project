@@ -8,11 +8,13 @@ import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
-import ru.skypro.homework.entity.ImageEntity;
+import ru.skypro.homework.entity.AvatarEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserEntityRepository;
 
+import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -23,7 +25,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
-    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder) {
+    private final AvatarService avatarService;
+    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder, AvatarService avatarService) {
         this.repository = repository;
         this.manager = manager;
         //this.manager = manager;
@@ -31,6 +34,7 @@ public class UserService {
         this.imageService = imageService;
        // this.passwordEncoder = passwordEncoder;
         this.passwordEncoder = passwordEncoder;
+        this.avatarService = avatarService;
     }
 
     public NewPassword setPassword(Principal principal, String newPassword){
@@ -43,7 +47,7 @@ public class UserService {
     }
 
     public User getUser(Principal principal) {
-        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElse(new UserEntity()));
+        return userMapper.toDTO(repository.findByEmail(principal.getName()).orElseThrow(EntityNotFoundException::new));
     }
     public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
@@ -58,12 +62,12 @@ public class UserService {
         return new UpdateUser(firstName,lastName,phone);
     }
 
-    public User updateImage(Principal principal, MultipartFile image) {
+    public User updateImage(Principal principal, MultipartFile image) throws IOException {
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
         if (userEntity.isPresent()){
-            ImageEntity uploadImage = imageService.saveImage(image);
+            AvatarEntity uploadImage = avatarService.saveAvatarForUser(principal, image);
             UserEntity newUserEntity = userEntity.get();
-            newUserEntity.setImage(uploadImage);
+            newUserEntity.setAvatarEntity(uploadImage);
             repository.save(newUserEntity);
             return userMapper.toDTO(newUserEntity);
         }

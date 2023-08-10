@@ -23,7 +23,7 @@ public class CommentsController {
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.getAllComments());
+        return ResponseEntity.ok(service.getAllComments(id));
     }
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id, @RequestBody Comment comment, Principal principal) {

@@ -2,6 +2,7 @@ package ru.skypro.homework.service;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AdService {
     private final AdEntityRepository adRepository;
     private final UserEntityRepository userEntityRepository;
@@ -40,7 +42,7 @@ public class AdService {
         Optional<UserEntity> optionalUserEntity = userEntityRepository.findByEmail(email);
         UserEntity userEntity = optionalUserEntity.get();
         AdEntity adEntity = adMapper.mapCreateOrUpdateDtoTo(createOrUpdateAd);
-        ImageEntity uploadImage = imageService.saveImage(image);
+        ImageEntity uploadImage = imageService.saveImageForAd(adEntity, image);
         adEntity.setImage(uploadImage);
         adEntity.setUser(userEntity);
         adRepository.save(adEntity);
@@ -106,17 +108,14 @@ public class AdService {
             throw new AdNotFoundException();
         }
     }
-    public String updateImage(int adId, MultipartFile file) throws AdNotFoundException {
-//        Optional<AdEntity> optionalAdlEntity = adRepository.findById(adId);
-//        if (optionalAdlEntity.isPresent()){
-//            AdEntity adEntity = optionalAdlEntity.get();
-//            adEntity.setImage(file.toString());
-//            adRepository.save(adEntity);
-//            return adEntity.getImage();
-//        } else {
-//            throw new AdNotFoundException();
-//        }
-        return file.toString();
+    public void updateImage(int adId, MultipartFile file) throws IOException {
+        Optional<AdEntity> optionalAdlEntity = adRepository.findById(adId);
+        if (optionalAdlEntity.isPresent()){
+            AdEntity adEntity = optionalAdlEntity.get();
+            imageService.updateImageForAd(adEntity, file);
+        } else {
+            throw new IOException();
+        }
     }
 
     public boolean checkAccessForAd(String username, Integer id) {

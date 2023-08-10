@@ -14,7 +14,7 @@ import java.util.List;
 public class UserEntity implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(unique = true)
     private String email;
     private String firstName;
@@ -23,8 +23,10 @@ public class UserEntity implements UserDetails{
     private String password;
     @OneToMany(mappedBy = "pk")
     private List<AdEntity> adEntity;
+//    @OneToOne
+//    private ImageEntity image;
     @OneToOne
-    private ImageEntity image;
+    private AvatarEntity avatarEntity;
     @OneToMany
     private List<CommentEntity> comment;
     @Enumerated(EnumType.STRING)

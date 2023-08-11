@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -18,10 +19,13 @@ import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ExtendedAd;
+import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.repository.AdEntityRepository;
 import ru.skypro.homework.service.AdService;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -155,4 +159,51 @@ public class AdsControllerTest {
 
     }
 
+
+    @Test
+    @WithMockUser
+    void testGetAllAdsByUser() throws Exception {
+        Ad ad = new Ad();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+        ad.setAuthor(1);
+        Ads ads = new Ads();
+        ads.setCount(1);
+        ads.setResults(List.of(ad));
+
+        when(adService.getAllAdsByUser(any(Principal.class))).thenReturn(ads);
+
+        mockMvc.perform(get("/ads/me"))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1)).getAllAdsByUser(any(Principal.class));
+    }
+
+    @Test
+    @WithMockUser
+    void testUpdateImageAd() throws Exception {
+        AdEntity ad = new AdEntity();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+
+        MockPart image = new MockPart(
+                "image",
+                "image.png",
+                "image.png".getBytes());
+        image.getHeaders().setContentType(MediaType.IMAGE_PNG);
+
+
+        when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(ad));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .multipart(HttpMethod.PATCH, "/ads/{id}/image", ad.getPk())
+                        .part(image)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1))
+                .updateImage(any(Integer.class), any(MultipartFile.class));
+    }
 }

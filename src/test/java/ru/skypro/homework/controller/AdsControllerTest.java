@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,8 +26,7 @@ import java.security.Principal;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AdsController.class)
@@ -41,7 +41,6 @@ public class AdsControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-
     @Test
     @WithMockUser
     void testGetAds() throws Exception {
@@ -51,8 +50,9 @@ public class AdsControllerTest {
 
         mockMvc.perform(get("/ads"))
                 .andExpect(status().isOk());
-        verify(adService,times(1)).getAllAds();
+        verify(adService, times(1)).getAllAds();
     }
+
     @Test
     @WithMockUser
     void testAddAds() throws Exception {
@@ -81,13 +81,14 @@ public class AdsControllerTest {
                 .part(jsonPart)
                 .file(filePart)
                 .with(csrf())
-                ).andExpect(status().isCreated());
-        verify(adService,times(1))
+        ).andExpect(status().isCreated());
+        verify(adService, times(1))
                 .saveAd(any(CreateOrUpdateAd.class), any(MultipartFile.class), any(Principal.class));
     }
+
     @Test
     @WithMockUser
-    void testGetInformationAboutAd() throws Exception{
+    void testGetInformationAboutAd() throws Exception {
         Ad ad = new Ad();
         ad.setPk(1);
         ad.setTitle("Кроссовки");
@@ -107,21 +108,51 @@ public class AdsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(extendedAd.getTitle()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(extendedAd.getPrice()));
 
-        verify(adService,times(1)).getInformationAboutAd(any(Integer.class));
+        verify(adService, times(1)).getInformationAboutAd(any(Integer.class));
     }
+
     @Test
     @WithMockUser
-    void testDeleteAd() throws Exception{
+    void testDeleteAd() throws Exception {
         Ad ad = new Ad();
         ad.setPk(1);
         ad.setTitle("Кроссовки");
         ad.setPrice(5000);
         ad.setAuthor(1);
-        mockMvc.perform(delete("/ads/{id}",ad.getPk())
+        mockMvc.perform(delete("/ads/{id}", ad.getPk())
                         .with(csrf()))
-                        .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
 
-        verify(adService,times(1)).deleteAd(any(Integer.class));
+        verify(adService, times(1)).deleteAd(any(Integer.class));
+    }
+
+    @Test
+    @WithMockUser
+    void testUpdateAd() throws Exception {
+        Ad ad = new Ad();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+        ad.setAuthor(1);
+        CreateOrUpdateAd createOrUpdateAd = new CreateOrUpdateAd(
+                "New title", ad.getPrice() + 1, "New description");
+        JSONObject createOrUpdateAdObject = new JSONObject();
+        createOrUpdateAdObject.put("title", createOrUpdateAd.getTitle());
+        createOrUpdateAdObject.put("price", createOrUpdateAd.getPrice());
+        createOrUpdateAdObject.put("description", createOrUpdateAd.getDescription());
+
+        when(adService.updateAD(any(Integer.class), any(CreateOrUpdateAd.class))).
+                thenReturn(ad);
+
+        mockMvc.perform(patch("/ads/{id}", ad.getPk())
+                        .content(createOrUpdateAdObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1)).updateAD(any(Integer.class), any(CreateOrUpdateAd.class));
+
     }
 
 }

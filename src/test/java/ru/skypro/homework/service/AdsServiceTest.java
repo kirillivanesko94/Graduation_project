@@ -1,10 +1,12 @@
 package ru.skypro.homework.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Equals;
 import org.springframework.mock.web.MockMultipartFile;
 import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
@@ -20,10 +22,12 @@ import ru.skypro.homework.repository.UserEntityRepository;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class AdsServiceTest {
@@ -50,6 +54,9 @@ public class AdsServiceTest {
 
     CreateOrUpdateAd createOrUpdateAd = new CreateOrUpdateAd("Кроссовки", 5000, "Крутые-кроссы");
     AdEntity adEntity = new AdEntity();
+    List<AdEntity> adEntityList = new ArrayList<>();
+    List<Ad> adList = new ArrayList<>();
+    Ads ads = new Ads();
 
 
     @BeforeEach
@@ -60,6 +67,7 @@ public class AdsServiceTest {
         AD.setPrice(5000);
         AD.setAuthor(1);
 
+        USER.setId(1);
         USER.setFirstName("User");
         USER.setLastName("User");
         USER.setEmail("user@mail.ru");
@@ -72,6 +80,13 @@ public class AdsServiceTest {
         adEntity.setPk(AD.getPk());
         adEntity.setDescription(createOrUpdateAd.getDescription());
         adEntity.setTitle(createOrUpdateAd.getTitle());
+
+        adEntityList.add(adEntity);
+
+        adList.add(AD);
+
+        ads.setCount(adList.size());
+        ads.setResults(adList);
     }
 
 
@@ -128,13 +143,58 @@ public class AdsServiceTest {
         verify(adMapper, times(1)).mapToExtAdDto(adEntity);
         verify(adEntityRepository, times(1)).findById(any(Integer.class));
     }
+
     @Test
-    void testDeleteAd() throws AdNotFoundException{
+    void testDeleteAd() throws AdNotFoundException {
         when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(adEntity));
 
         adService.deleteAd(AD.getPk());
 
         verify(adEntityRepository, times(1)).deleteById(any(Integer.class));
+        verify(adEntityRepository, times(1)).findById(any(Integer.class));
+    }
+
+    @Test
+    void testUpdateAD() throws AdNotFoundException {
+        when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(adEntity));
+        when(adMapper.mapToDto(any(AdEntity.class))).thenReturn(AD);
+
+        Ad result = adService.updateAD(AD.getPk(), createOrUpdateAd);
+
+        assertEquals(AD, result);
+        verify(adMapper, times(1)).mapToDto(adEntity);
+        verify(adEntityRepository, times(1)).findById(any(Integer.class));
+    }
+
+    @Test
+    void testGetAllAdsByUser() throws AdNotFoundException {
+        when(userEntityRepository.findByEmail(principal.getName())).thenReturn(Optional.of(USER));
+        when(adEntityRepository.findAllByUserId(any(Integer.class))).thenReturn(adEntityList);
+        when(adMapper.mapToListDto(adEntityList)).thenReturn(adList);
+
+        Ads result = adService.getAllAdsByUser(principal);
+
+        assertEquals(ads, result);
+        verify(adMapper, times(1)).mapToListDto(adEntityList);
+        verify(adEntityRepository, times(1)).findAllByUserId(any(Integer.class));
+        verify(userEntityRepository, times(1)).findByEmail(principal.getName());
+    }
+
+    @Test
+    void testUpdateImage() throws IOException {
+        when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(adEntity));
+
+        adService.updateImage(AD.getPk(), FILE);
+
+        verify(adEntityRepository, times(1)).findById(any(Integer.class));
+        verify(imageService, times(1)).updateImageForAd(adEntity, FILE);
+    }
+
+    @Test
+    void testCheckAccessForAd() {
+        when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(adEntity));
+
+        assertTrue(adService.checkAccessForAd(USER.getUsername(), AD.getPk()));
         verify(adEntityRepository, times(1)).findById(any(Integer.class));
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Data
 public class AdEntity {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ad")
     private ImageEntity image;
     @Id

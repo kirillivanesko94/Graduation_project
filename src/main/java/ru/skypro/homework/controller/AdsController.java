@@ -46,13 +46,13 @@ public class AdsController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteAd(@PathVariable int id) throws AdNotFoundException {
+    public ResponseEntity<?> deleteAd(@PathVariable Integer id) throws AdNotFoundException {
         adService.deleteAd(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Ad> updateAd(@PathVariable int id, @RequestBody CreateOrUpdateAd createOrUpdateAd)
+    public ResponseEntity<Ad> updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAd createOrUpdateAd)
             throws AdNotFoundException {
         adService.updateAD(id, createOrUpdateAd);
         return ResponseEntity.ok().build();

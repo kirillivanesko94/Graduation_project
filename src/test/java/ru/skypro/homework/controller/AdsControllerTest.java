@@ -1,10 +1,12 @@
 package ru.skypro.homework.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -17,16 +19,18 @@ import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ExtendedAd;
+import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.repository.AdEntityRepository;
 import ru.skypro.homework.service.AdService;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AdsController.class)
@@ -41,7 +45,6 @@ public class AdsControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-
     @Test
     @WithMockUser
     void testGetAds() throws Exception {
@@ -51,8 +54,9 @@ public class AdsControllerTest {
 
         mockMvc.perform(get("/ads"))
                 .andExpect(status().isOk());
-        verify(adService,times(1)).getAllAds();
+        verify(adService, times(1)).getAllAds();
     }
+
     @Test
     @WithMockUser
     void testAddAds() throws Exception {
@@ -81,13 +85,14 @@ public class AdsControllerTest {
                 .part(jsonPart)
                 .file(filePart)
                 .with(csrf())
-                ).andExpect(status().isCreated());
-        verify(adService,times(1))
+        ).andExpect(status().isCreated());
+        verify(adService, times(1))
                 .saveAd(any(CreateOrUpdateAd.class), any(MultipartFile.class), any(Principal.class));
     }
+
     @Test
     @WithMockUser
-    void testGetInformationAboutAd() throws Exception{
+    void testGetInformationAboutAd() throws Exception {
         Ad ad = new Ad();
         ad.setPk(1);
         ad.setTitle("Кроссовки");
@@ -107,21 +112,98 @@ public class AdsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(extendedAd.getTitle()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(extendedAd.getPrice()));
 
-        verify(adService,times(1)).getInformationAboutAd(any(Integer.class));
+        verify(adService, times(1)).getInformationAboutAd(any(Integer.class));
     }
+
     @Test
     @WithMockUser
-    void testDeleteAd() throws Exception{
+    void testDeleteAd() throws Exception {
         Ad ad = new Ad();
         ad.setPk(1);
         ad.setTitle("Кроссовки");
         ad.setPrice(5000);
         ad.setAuthor(1);
-        mockMvc.perform(delete("/ads/{id}",ad.getPk())
+        mockMvc.perform(delete("/ads/{id}", ad.getPk())
                         .with(csrf()))
-                        .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
 
-        verify(adService,times(1)).deleteAd(any(Integer.class));
+        verify(adService, times(1)).deleteAd(any(Integer.class));
     }
 
+    @Test
+    @WithMockUser
+    void testUpdateAd() throws Exception {
+        Ad ad = new Ad();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+        ad.setAuthor(1);
+        CreateOrUpdateAd createOrUpdateAd = new CreateOrUpdateAd(
+                "New title", ad.getPrice() + 1, "New description");
+        JSONObject createOrUpdateAdObject = new JSONObject();
+        createOrUpdateAdObject.put("title", createOrUpdateAd.getTitle());
+        createOrUpdateAdObject.put("price", createOrUpdateAd.getPrice());
+        createOrUpdateAdObject.put("description", createOrUpdateAd.getDescription());
+
+        when(adService.updateAD(any(Integer.class), any(CreateOrUpdateAd.class))).
+                thenReturn(ad);
+
+        mockMvc.perform(patch("/ads/{id}", ad.getPk())
+                        .content(createOrUpdateAdObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1)).updateAD(any(Integer.class), any(CreateOrUpdateAd.class));
+
+    }
+
+
+    @Test
+    @WithMockUser
+    void testGetAllAdsByUser() throws Exception {
+        Ad ad = new Ad();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+        ad.setAuthor(1);
+        Ads ads = new Ads();
+        ads.setCount(1);
+        ads.setResults(List.of(ad));
+
+        when(adService.getAllAdsByUser(any(Principal.class))).thenReturn(ads);
+
+        mockMvc.perform(get("/ads/me"))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1)).getAllAdsByUser(any(Principal.class));
+    }
+
+    @Test
+    @WithMockUser
+    void testUpdateImageAd() throws Exception {
+        AdEntity ad = new AdEntity();
+        ad.setPk(1);
+        ad.setTitle("Кроссовки");
+        ad.setPrice(5000);
+
+        MockPart image = new MockPart(
+                "image",
+                "image.png",
+                "image.png".getBytes());
+        image.getHeaders().setContentType(MediaType.IMAGE_PNG);
+
+
+        when(adEntityRepository.findById(any(Integer.class))).thenReturn(Optional.of(ad));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .multipart(HttpMethod.PATCH, "/ads/{id}/image", ad.getPk())
+                        .part(image)
+                        .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(adService, times(1))
+                .updateImage(any(Integer.class), any(MultipartFile.class));
+    }
 }

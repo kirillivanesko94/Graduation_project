@@ -15,11 +15,18 @@ public class UserContextService {
         this.repository = repository;
     }
 
+    /**
+     * Method for adding all users from the database to the context
+     */
     public List<UserDetails> doAllUsersToContext(){
         return repository.findAll().stream().map(this::doUserInContext).collect(Collectors.toList());
     }
 
-    public UserDetails doUserInContext(UserEntity user){
+    /**
+     * Method for creating a UserDetails entity from a user
+     * @param user - user information from the database
+     */
+    private UserDetails doUserInContext(UserEntity user){
         return org.springframework.security.core.userdetails.User.builder()
                 .password(user.getPassword())
                 .username(user.getEmail())

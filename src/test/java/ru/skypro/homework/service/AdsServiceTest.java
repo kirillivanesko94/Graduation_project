@@ -1,12 +1,10 @@
 package ru.skypro.homework.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Equals;
 import org.springframework.mock.web.MockMultipartFile;
 import ru.skypro.homework.dto.Ad;
 import ru.skypro.homework.dto.Ads;

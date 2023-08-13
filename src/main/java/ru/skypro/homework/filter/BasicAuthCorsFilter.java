@@ -12,7 +12,16 @@ import java.io.IOException;
 
 @Component
 public class BasicAuthCorsFilter extends OncePerRequestFilter {
-
+    /**
+     This method is called when a request is being processed by the servlet container.
+     It adds the "Access-Control-Allow-Credentials" header to the response and
+     passes the request and response objects to the next filter in the chain.
+     @param httpServletRequest the request object for the current HTTP request
+     @param httpServletResponse the response object for the current HTTP response
+     @param filterChain the chain of filters that will process the request
+     @throws ServletException if a servlet-specific error occurs
+     @throws IOException if an I/O error occurs during the processing of the request
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,

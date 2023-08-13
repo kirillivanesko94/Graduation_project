@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.service.UserService;
 
-@Service
+@Service("authService")
 public class AuthService implements ru.skypro.homework.service.AuthService {
 
     private final UserDetailsManager manager;

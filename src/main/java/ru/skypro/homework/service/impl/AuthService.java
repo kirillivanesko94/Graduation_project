@@ -21,7 +21,11 @@ public class AuthService implements ru.skypro.homework.service.AuthService {
         this.encoder = passwordEncoder;
         this.userService = userService;
     }
-
+    /**
+     * Method for user registration
+     * @param userName - user's login (email)
+     * @param password - user's password
+     */
     @Override
     public boolean login(String userName, String password) {
         if (!manager.userExists(userName)) {
@@ -31,6 +35,10 @@ public class AuthService implements ru.skypro.homework.service.AuthService {
         return encoder.matches(password, userDetails.getPassword());
     }
 
+    /**
+     * Method for user authenticationM
+     * @param register - full user information
+     */
     @Override
     public boolean register(Register register) {
         if (manager.userExists(register.getUsername())) {

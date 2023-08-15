@@ -23,19 +23,20 @@ public class UserService {
     private final UserEntityRepository repository;
     private final UserDetailsManager manager;
     private final UserMapper userMapper;
-    private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
     private final AvatarService avatarService;
-    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, ImageService imageService, PasswordEncoder passwordEncoder, AvatarService avatarService) {
+    public UserService(UserEntityRepository repository, UserDetailsManager manager, UserMapper userMapper, PasswordEncoder passwordEncoder, AvatarService avatarService) {
         this.repository = repository;
         this.manager = manager;
-        //this.manager = manager;
         this.userMapper = userMapper;
-        this.imageService = imageService;
-       // this.passwordEncoder = passwordEncoder;
         this.passwordEncoder = passwordEncoder;
         this.avatarService = avatarService;
     }
+    /**
+     * Method for updating the user's password
+     * @param principal - can be used to represent any entity, such as an individual, a corporation, and a login id.
+     * @param newPassword - updated password for the user
+     */
 
     public NewPassword setPassword(Principal principal, String newPassword){
         UserEntity userEntity = repository.findByEmail(principal.getName()).get();
@@ -45,10 +46,21 @@ public class UserService {
         repository.save(userEntity);
         return newPasswordDTO;
     }
+    /**
+     * The method returns data about the user
+     * @param principal - can be used to represent any entity, such as an individual, a corporation, and a login id.
+     */
 
     public User getUser(Principal principal) {
         return userMapper.toDTO(repository.findByEmail(principal.getName()).orElseThrow(EntityNotFoundException::new));
     }
+    /**
+     * Method for updating user data
+     * @param principal - can be used to represent any entity, such as an individual, a corporation, and a login id.
+     * @param firstName - user's name
+     * @param lastName - user's last name
+     * @param phone - user's phone number
+     */
     public UpdateUser updateUser(Principal principal, String firstName, String lastName, String phone)  {//ок
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
         if (userEntity.isPresent()){
@@ -61,6 +73,11 @@ public class UserService {
         }
         return new UpdateUser(firstName,lastName,phone);
     }
+    /**
+     * The method updates the user's photo
+     * @param principal - can be used to represent any entity, such as an individual, a corporation, and a login id.
+     * @param image - user's avatar
+     */
 
     public User updateImage(Principal principal, MultipartFile image) throws IOException {
         Optional<UserEntity> userEntity = repository.findByEmail(principal.getName());
@@ -73,6 +90,10 @@ public class UserService {
         }
         return null;
     }
+    /**
+     * The method adds the user to the table
+     * @param register - full user information
+     */
     public void addInTable(Register register){
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(passwordEncoder.encode(register.getPassword()));

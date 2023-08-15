@@ -21,7 +21,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
         prePostEnabled = true)
 public class WebSecurityConfig {
       private final UserContextService service;
-
+    /**
+     * List of URLs available to all (unauthorized) users
+     */
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -36,11 +38,21 @@ public class WebSecurityConfig {
     public WebSecurityConfig(UserContextService service) {
         this.service = service;
     }
+
+    /**
+     * A method for adding users from a database in the context of a spring
+     * @param passwordEncoder {@link PasswordEncoder}
+     */
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
         List<UserDetails> userDetailsList = service.doAllUsersToContext();
         return new InMemoryUserDetailsManager(userDetailsList);
     }
+
+    /**
+     * Bean for configuring user security and accessibility
+     * @param http {@link HttpSecurity}
+      */
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,6 +72,10 @@ public class WebSecurityConfig {
                 .httpBasic(withDefaults());
         return http.build();
     }
+
+    /**
+     * Bean for storing passwords in encoded form
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {

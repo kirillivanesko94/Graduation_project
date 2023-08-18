@@ -1,8 +1,13 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +24,19 @@ import ru.skypro.homework.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
-
+    @Operation(summary = "User authorization",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Authorized User",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Login.class)
+                            )
+                    )
+            },
+            tags = "Users"
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Login login) {
         if (authService.login(login.getUsername(), login.getPassword())) {
@@ -28,6 +45,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+    @Operation(summary = "User Registration",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Registered User",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Register.class)
+                            )
+                    )
+            },
+            tags = "Users"
+    )
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Register register) {

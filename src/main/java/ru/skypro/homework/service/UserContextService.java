@@ -19,6 +19,9 @@ public class UserContextService {
      * Method for adding all users from the database to the context
      */
     public List<UserDetails> doAllUsersToContext(){
+        UserEntity user = new UserEntity();
+        user.setPassword("1234567890");
+        user.setEmail("1234567890@mail.ru");
         return repository.findAll().stream().map(this::doUserInContext).collect(Collectors.toList());
     }
 
